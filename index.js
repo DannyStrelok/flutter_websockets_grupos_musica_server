@@ -22,6 +22,14 @@ io.on('connection', client => {
 
     })
 
+    client.on('emitir-mensaje', (payload) => {
+        console.log(payload);
+        io.emit('nuevo-mensaje', {
+            nombre: 'dani',
+            mensaje: 'que pasa tronco!!'
+        })
+    });
+
 });
 
 

@@ -8,7 +8,7 @@
 <body>
     <h1>Acceso denegado</h1>
 
-    <script src="/socket.io/socket.io.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
         socket.on('connect', function() {
@@ -22,7 +22,11 @@
             nombre: 'Dani'
         })
 
-        socket.on('mensaje', (e) => {
+        socket.emit('nuevo-mensaje', {
+            nombre: 'Dani nuevo mensaje'
+        })
+
+        socket.on('nuevo-mensaje', (e) => {
             console.log(e)
         })
 
