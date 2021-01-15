@@ -18,17 +18,20 @@
             console.log('Sin conexión')
         })
 
-        socket.emit('mensaje', {
-            nombre: 'Dani'
+        socket.on('nuevo-mensaje', function(e) {
+            console.log(e);
         })
 
-        socket.emit('nuevo-mensaje', {
-            nombre: 'Dani nuevo mensaje'
+        socket.on('emitir-mensaje', function(e) {
+            console.log(e);
+        })
+        
+        socket.on('grupos-activos', function(e){
+            console.clear();
+            console.table(e);
         })
 
-        socket.on('nuevo-mensaje', (e) => {
-            console.log(e)
-        })
+        
 
     </script>
 </body>
