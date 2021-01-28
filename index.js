@@ -3,6 +3,7 @@ const path = require('path');
 require('dotenv').config();
 const {dbConnection} = require('./database/config');
 const { checkJWT } = require('./helpers/jwt');
+const { userConnected, userDisconnected } = require('./controllers/socket');
 dbConnection();
 
 const app = express();
@@ -20,8 +21,20 @@ io.on('connection', client => {
 
     if(!isAuthorized) {return client.disconnect();}
 
+    userConnected(uuid);
+
+    client.join(uuid);
+
+    client.on('mensaje-personal', payload => {
+        console.log(payload);
+
+        io.to(payload.to).emit('mensaje-personal', payload);
+
+    })
+
     client.on('disconnect', () => {
         console.log('cliente desconectado');
+        userDisconnected(uuid);
     });
 
 });
@@ -32,6 +45,7 @@ app.use(express.static(publicPath));
 
 // RUTAS
 app.use('/api/login', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
 
 server.listen(process.env.PORT, (err) => {
     if(err) throw new Error(err);
