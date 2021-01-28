@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 const {dbConnection} = require('./database/config');
+const { checkJWT } = require('./helpers/jwt');
 dbConnection();
 
 const app = express();
@@ -14,6 +15,10 @@ const io = require('socket.io')(server);
 
 io.on('connection', client => {
     console.log('cliente conectado');
+
+    const [isAuthorized, uuid] = checkJWT(client.handshake.headers['authorization']);
+
+    if(!isAuthorized) {return client.disconnect();}
 
     client.on('disconnect', () => {
         console.log('cliente desconectado');
