@@ -1,4 +1,5 @@
 const UserSchema = require('../models/user');
+const MensajeSchema = require('../models/mensaje');
 
 
 const userConnected = async (uuid = '') => {
@@ -19,7 +20,31 @@ const userDisconnected = async (uuid = '') => {
 
 }
 
+const saveMessage = async (payload) => {
+
+    /**
+     * {
+     * from: '',
+     * to: '',
+     * message: ''
+     * }
+     */
+
+    try {
+        const mensaje = new MensajeSchema(payload);
+        console.log('mensaje')
+        const resp = await mensaje.save();
+        console.log(resp);
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+
+}
+
 module.exports = {
     userConnected,
-    userDisconnected
+    userDisconnected,
+    saveMessage
 }

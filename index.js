@@ -3,7 +3,7 @@ const path = require('path');
 require('dotenv').config();
 const {dbConnection} = require('./database/config');
 const { checkJWT } = require('./helpers/jwt');
-const { userConnected, userDisconnected } = require('./controllers/socket');
+const { userConnected, userDisconnected, saveMessage } = require('./controllers/socket');
 dbConnection();
 
 const app = express();
@@ -25,9 +25,8 @@ io.on('connection', client => {
 
     client.join(uuid);
 
-    client.on('mensaje-personal', payload => {
-        console.log(payload);
-
+    client.on('mensaje-personal', async payload => {
+        await saveMessage(payload);
         io.to(payload.to).emit('mensaje-personal', payload);
 
     })
@@ -46,6 +45,7 @@ app.use(express.static(publicPath));
 // RUTAS
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/mensajes', require('./routes/mensajes'));
 
 server.listen(process.env.PORT, (err) => {
     if(err) throw new Error(err);
